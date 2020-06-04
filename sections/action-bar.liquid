@@ -1,0 +1,52 @@
+
+{% if section.settings.disable_action_bar %}
+<style>
+  @media only screen and (max-width:767px) {
+  .action-bar-wrapper {display:none;}  
+  }  
+</style>
+{% endif %}
+<div class="action-area">
+  <div class="action-bar-wrapper {% if template.name == 'index' %} action-bar--hero{% endif %} {% if section.settings.action_bar_link_list == blank %} hide {% endif %}" data-section-id="{{ section.id }}" data-section-type="action-bar-section">
+    <nav class="action-bar action-bar--has-menu" role="presentation">
+      <ul class="action-bar__menu--main action-bar__menu list--inline action-bar--show" id="SiteNav" role="navigation">
+        {% for link in linklists[section.settings.action_bar_link_list].links %}
+             <li class="action-bar__menu-item {% if link.active %}action-bar--active{% endif %}">
+              <a href="{{ link.url }}" class="action-bar__link">{{ link.title }}</a>
+            </li>
+        {% endfor %}
+      </ul>
+    </nav>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Action bar",
+  "class": "action-bar-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Action Bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "disable_action_bar",
+      "label": "Disable Action bar for mobile",
+      "default": true
+    },
+    {
+      "type": "link_list",
+      "id": "action_bar_link_list",
+      "label": "Menu",
+      "default": "main-menu",
+      "info": "This menu has limited support for dropdown items"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Action bar",
+      "category": "Secondary Menu"
+  	}
+  ]
+}
+{% endschema %}

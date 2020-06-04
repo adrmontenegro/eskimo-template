@@ -1,0 +1,41 @@
+<!--prouct-count-->
+{% if settings.page_style == 'standard' and template == 'product' %}
+{% if section.settings.enable_progressbar_text  or  section.settings.enable_timer_top_message %}
+{% include 'product-progress-bar' %} 
+{% endif %}
+{% endif %}
+
+{% include 'product-addtocart' %}
+
+
+<style>
+
+  {% unless section.settings.enable_progressbar_text %}
+  #progressBar
+  {
+     display: none;
+  }
+  #progressBar1
+  {
+    display: none;
+  }
+  
+  {% endunless %}
+</style>
+
+<script type="text/javascript">
+{% if settings.enable_inventory_stock_number == "enable_inventory_stock_number_with_not_desc"  %}
+	var livestock = true;
+{% else %}
+	var livestock = false; 
+{% endif %} 
+  
+ 
+</script>
+
+
+<script type="text/javascript">
+  $(".progressBar_back").animate({
+    width: 137.5
+  }, 1000);
+</script>

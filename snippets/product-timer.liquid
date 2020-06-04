@@ -1,0 +1,205 @@
+  {% if current_variant.compare_at_price > current_variant.price %}
+{% assign price_pro = current_variant.compare_at_price | money %}
+{% endif %}
+{% if section.settings.enable_progressbartimer_text and settings.page_style == 'standard' and template == 'product' %}
+<div id="progress_bar_text_sale_normal" class="progress-container items-count {{ tg }}{% if section.settings.sticky_button == 'show_timer' and section.settings.enable_sticky %} small--hide{% endif %}">
+  <p class="progressbar_text_sale">{{ 'products.product.sticky_timer_text' | t }}
+  {{ 'products.product.sale_end_text_html' | t: price: price_pro }}
+  </p>
+</div>
+{% endif %} 
+{% if section.settings.enable_progressbartimer_text and settings.page_style == 'marketplace' or template == 'product.amazon' %}
+<div id="progress_bar_text_sale" class="grid__item pad_zero pad_mob_zero progress-container items-count {{ tg }}{% if section.settings.sticky_button == 'show_timer' and section.settings.enable_sticky %} small--hide{% endif %}">
+  <p class="progressbar_text_sale">{{ 'products.product.sticky_timer_text' | t }} </p>
+</div>
+{% endif %} 
+<div class="timer_adjustment {% if section.settings.sticky_button == 'show_timer' and section.settings.enable_sticky %}small--hide{% endif %}">
+
+{% assign tg = 'show' %}
+{% if settings.disable_timer_use_tag %}
+  {% for tag in product.tags %}
+    {% if "no-timer" == tag %}
+    	{% assign tg = 'hide' %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+<div class="counter_box {{ tg }}">
+  <input type="hidden" class="timer_time" value="{{ settings.enable_timer_stg_custom }}" />
+  {% if section.settings.enable_timer_stg_on == 'enable_timer_stg_on' %}
+
+ {% if settings.enable_timer_stg == 'enable_timer_custom' %}          
+
+     {% if settings.enable_inventory_stock_number == "enable_stock_number_random" %}
+     
+
+      {% assign leftNumber='' %}
+      <input type="hidden" id="stock_left_num" class="cookies_Left_number stock_left_num" value="" />
+
+      {% else %}
+     
+      <input type="hidden" id="stock_left_num" class="cookies_Left_number stock_left_num" value="{{ leftNumber }}" />
+  
+    {% assign all_if = 0 %}
+    {% assign total = 0 %}
+    {% assign infinity = false %}
+ 
+    {% for variant in product.variants %}
+
+    {% if variant.inventory_management != 'shopify' %}  
+    {% assign infinity = true %}
+  	{% else %}
+   	{% capture temp %}{{ total | plus: variant.inventory_quantity }}{% endcapture %}
+    {% assign total = temp %}
+  	{% assign all_if = 1 %}
+    {% endif %}
+    {% endfor %}
+
+
+    {% if infinity == true %}
+    {% assign leftNumber = total %}
+    {% else %}
+    {% assign leftNumber = total %}
+    {% endif %}
+
+   	{% endif %}
+
+  <input type="hidden" class="timer_time" value="{{settings.enable_timer_stg_custom}}" />
+  <input type="hidden"  class="total_stock_left_num" value="{{leftNumber}}" />
+  <input type="hidden" id="stock_left_num" class="stock_left_num" value="{{ leftNumber }}" />
+  <input type="hidden"  id="stock_final_num" value="{{ leftNumber }}" />
+
+  {% include 'set_cookies' %} 	
+  {% include 'product_count_24m' %}
+
+
+  {% elsif settings.enable_timer_stg == 'enable_timer_custom_time_revise' %}
+  
+      {% if settings.enable_inventory_stock_number == "enable_stock_number_random" %}
+     
+
+      {% assign leftNumber='' %}
+      <input type="hidden" id="stock_left_num" class="cookies_Left_number stock_left_num" value="" />
+
+      {% else %}
+     
+      <input type="hidden" id="stock_left_num" class="cookies_Left_number stock_left_num" value="{{ leftNumber }}" />
+      {% assign all_if = 0 %}
+    {% assign total = 0 %}
+    {% assign infinity = false %}
+ 
+    {% for variant in product.variants %}
+
+    {% if variant.inventory_management != 'shopify' %}  
+    {% assign infinity = true %}
+  	{% else %}
+   	{% capture temp %}{{ total | plus: variant.inventory_quantity }}{% endcapture %}
+    {% assign total = temp %}
+  	{% assign all_if = 1 %}
+    {% endif %}
+    {% endfor %}
+
+
+    {% if infinity == true %}
+    {% assign leftNumber = total %}
+    {% else %}
+    {% assign leftNumber = total %}
+    {% endif %}
+  
+
+
+
+   	{% endif %}
+
+  <input type="hidden" class="timer_time_reset_day timer_time" value="120" />                 
+  <input type="hidden"  class="total_stock_left_num" value="{{leftNumber}}" />
+
+  <input type="hidden" id="stock_left_num" class="reset_day_Left_number stock_left_num" value="" />
+  <input type="hidden"  id="stock_final_num" value="{{ leftNumber }}" />
+
+
+  {% include 'reset_every_day' %} 						
+  {{ 'jquery.countdownTimer.js' | asset_url | script_tag }}
+{% if settings.reset_every_date != blank and settings.enable_timer_reset_every_day != blank%}
+  <script>
+    $(function(){    
+      $('#hm_timer').countdowntimer({
+        dateAndTime : timeDate,
+        size : "lg",
+        regexpMatchFormat: "([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})",
+        regexpReplaceWith: "<span class='day_timer dayCol timerLbl' data-value='{{ 'products.timer.day' | t }}'>$1</span><span class='hour_timer hrCol timerLbl' data-value='{{ 'products.timer.hour' | t }}'>$2</span><span class='minute_timer minCol timerLbl' data-value='{{ 'products.timer.minute' | t }}'>$3</span><span class='second_timer secondCol timerLbl' data-value='{{ 'products.timer.second' | t }}'>$4</span>"            
+      });
+    });
+  </script>
+  <script>
+
+    $(function(){
+      $('#hm_timer1201').countdowntimer({
+        dateAndTime : timeDate,
+      });
+    });
+  </script>
+  {% endif %}
+  <table id="timertwohour">
+
+    <tr>
+      <td><span id="hm_timer" class="timerStyle"></span></td>
+    </tr>
+
+  </table>
+
+
+  {% else %} 
+
+  <input type="hidden" id="myMinute" class="timer_time" value="" />
+  <input type="hidden" id="myLeftnum" class="stock_left_num" value="" />
+  <input type="hidden"  id="stock_final_num" value="" />
+
+
+  <script>
+
+    // for minute
+    var myMinute = ['10','15', '20', '25', '30', '45','60','90','120','180','300','420','600','720'];    
+
+    var randMinute = Math.floor(Math.random() * myMinute.length);
+
+    var currentMinute = myMinute[randMinute];
+    document.getElementById("myMinute").value =currentMinute*60;
+
+   
+  </script>
+
+
+
+  {% include 'product_count_random' %}
+
+  {% endif %}
+
+
+{% endif %}
+
+</div>
+
+
+<style>
+  {% if settings.page_style == 'marketplace'  or template == 'product.amazon'%}
+  .timer_adjustment {clear: both;width: 100%;}
+  .product-form-product-amazon-template .timer_adjustment span#hm_timer {float:none;}
+  {% else %}
+  .timer_adjustment {width: 100%;margin-bottom:10px;}
+  @media only screen and (min-width:990px){
+  .timer_adjustment {width: 50%;margin-bottom: 6px;float: left;}
+  }
+  {% endif %}
+  .product-description.rte, .rte{
+    float:left !important;
+    text-align: left;  
+  }
+ 
+</style>
+</div>
+{% if section.settings.enable_progressbartimer_text and settings.page_style == 'marketplace' or template == 'product.amazon'%}
+<div id="progress_bar_text_sale" class="grid__item pad_zero pad_mob_zero progress-container items-count {{ tg }}{% if section.settings.sticky_button == 'show_timer' and section.settings.enable_sticky %} small--hide{% endif %}">
+  <p class="progressbar_text_sale">{{ 'products.product.sale_end_text_html' | t: price: price_pro }}</p>
+</div>
+{% endif %} 

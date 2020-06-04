@@ -1,0 +1,43 @@
+{% comment %}
+  The contents of the product.liquid template can be found in /sections/product-template.liquid
+{% endcomment %}
+
+<div class="medium-up--three-quarters medium--one-whole small--one-whole">
+
+{% section 'product-amazon-template' %}
+{% section 'releted_upsell_popup' %}
+{% if settings.product_review  %}
+ {% if settings.review_app == 'loox_review_app' %}
+<div id="looxReviews" data-product-id="{{product.id}}" class="loox-reviews-default">{{ product.metafields.loox.reviews }}</div>
+{% elsif settings.review_app == 'ali_review_app' %}
+ <div id="shopify-ali-review" product-id="{{ product.id }}"> {{ shop.metafields.review_collector.review_code }} </div>
+{% else %}
+<div id="shopify-product-reviews" data-id="{{product.id}}">{{ product.metafields.spr.reviews }}</div> 
+{% endif %}
+{% endif %}
+<div class="related_prod_4">
+{% section 'related-product' %}
+</div>
+{% if settings.display_recently_viewed  %}
+{% include 'include-recently-viewed' %}
+{% endif %}
+{% if collection %}
+  <div class="text-center return-link-wrapper">
+    <a href="{{ collection.url }}" class="btn btn--has-icon-before return-link">
+      {% include 'icon-arrow-left' %}
+      {{ 'products.product.back_to_collection' | t: title: collection.title }}
+    </a>
+  </div>
+{% endif %}
+</div>
+
+<script>
+  // Override default values of shop.strings for each template.
+  // Alternate product templates can change values of
+  // add to cart button, sold out, and unavailable states here.
+  theme.productStrings = {
+    addToCart: {{ 'products.product.add_to_cart' | t | json }},
+    soldOut: {{ 'products.product.sold_out' | t | json }},
+    unavailable: {{ 'products.product.unavailable' | t | json }}
+  }
+</script>

@@ -1,0 +1,105 @@
+
+{{ 'jquery.countdownTimer_2hours_custom.js' | asset_url | script_tag }}
+
+<script>
+  var myMinutevar=document.getElementById("myMinute").value;
+
+  var time_day= Math.floor(myMinutevar / 60 / 24);
+  var time_hours = Math.floor(myMinutevar / 60) % 24; 
+  var time_minutes= Math.floor(myMinutevar) % 60;
+  var new_second = myMinutevar % 60;
+  function addDays(date, days) {
+    var result = new Date(date);
+    result.setDate(date.getDate() + days);
+    return result;
+  }
+  function formatDate(date) {
+    return date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+  }
+  var date1 = new Date();  
+  var dd = date1.getDate();
+  var mm = date1.getMonth()+ 1;
+  var y = date1.getFullYear();
+  var H=date1.getHours(); 
+  var m=date1.getMinutes(); 
+  var s=date1.getSeconds(); 
+  var NowTime_1=H+':'+m+':'+s;
+  var random_time = time_hours+':'+time_minutes+ ':'+new_second;
+  var correctDate = formatDate(addDays(date1, time_day));  
+  var startdayDate = y + '/'+ mm + '/'+ dd;
+
+  var rendomtime_2 = correctDate + ' ' + time_hours + ':' + time_minutes + ':' + new_second;
+  var currenttime_2 = startdayDate + ' ' + time_hours + ':' + time_minutes + ':' + new_second;
+  
+  if(NowTime_1 < random_time) {
+    var finaltime = currenttime_2; 
+  }else{
+    var finaltime = rendomtime_2;     
+  }
+
+ 
+ 
+  
+  $(function(){
+    $('#hm_timer').countdowntimer({
+        dateAndTime : finaltime,
+        size : "lg",
+		regexpMatchFormat: "([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})",
+        regexpReplaceWith: "<span class='day_timer dayCol timerLbl' data-value='{{ 'products.timer.day' | t }}'>$1</span><span class='hour_timer hrCol timerLbl' data-value='{{ 'products.timer.hour' | t }}'>$2</span><span class='minute_timer minCol timerLbl' data-value='{{ 'products.timer.minute' | t }}'>$3</span><span class='second_timer secondCol timerLbl' data-value='{{ 'products.timer.second' | t }}'>$4</span>"              
+     }); 
+  });
+</script>
+
+<table id="timertwohour">
+  <tr>
+    <td colspan="3"><span id="hm_timer" class="timerStyle"></span></td>
+  </tr>
+  
+</table>
+
+
+<script>
+  var myMinutevar=document.getElementById("myMinute").value;
+  var time_day= Math.floor(myMinutevar / 60 / 24);
+  var time_hours = Math.floor(myMinutevar / 60) % 24; 
+  var time_minutes= Math.floor(myMinutevar) % 60;
+  var new_second = myMinutevar % 60;
+  function addDays(date, days) {
+    var result = new Date(date);
+    result.setDate(date.getDate() + days);
+    return result;
+  }
+  function formatDate(date) {
+    return date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+  }
+ var date1 = new Date();  
+  var dd = date1.getDate();
+  var mm = date1.getMonth()+ 1;
+  var y = date1.getFullYear();
+  var H=date1.getHours(); 
+  var m=date1.getMinutes(); 
+  var s=date1.getSeconds(); 
+  var NowTime_1=H+':'+m+':'+s;
+  var random_time = time_hours+':'+time_minutes+ ':'+new_second;
+  var correctDate = formatDate(addDays(date1, time_day));  
+  var startdayDate = y + '/'+ mm + '/'+ dd;
+
+  var rendomtime_2 = correctDate + ' ' + time_hours + ':' + time_minutes + ':' + new_second;
+  var currenttime_2 = startdayDate + ' ' + time_hours + ':' + time_minutes + ':' + new_second;
+  
+  if(NowTime_1 < random_time) {
+    var finaltime = currenttime_2; 
+  }else{
+    var finaltime = rendomtime_2;     
+  }
+
+  $(function(){
+
+    $('#hm_timer1201').countdowntimer({
+        dateAndTime : finaltime,
+        size : "lg",
+		regexpMatchFormat: "([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})",
+        regexpReplaceWith: "<samp class='day_timer text-left'>$1</samp><span>:</span><samp class='hour_timer text-left'>$2</samp><span>:</span><samp class='minute_timer'>$3</samp><span>:</span><samp class='second_timer text-right'>$4</samp>"              
+     }); 
+  });
+</script>

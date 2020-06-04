@@ -1,0 +1,235 @@
+<!-- SELL BUTTON STYLE -->
+{% if settings.sale_button_option == "sale_button_option_one" %}
+
+	{% assign sale_box_opt = "sale_wheel" %}
+
+{% elsif settings.sale_button_option == "sale_button_option_two" %}
+
+	{% assign sale_box_opt = "sale_wheel-two" %}
+
+{% elsif settings.sale_button_option == "sale_button_option_three" %}
+
+	{% assign sale_box_opt = "sale_wheel-three" %}
+
+{% endif %} 
+
+{% assign on_sale = false %}
+{% if product.compare_at_price > product.price %}
+	{% assign on_sale = true %}
+{% endif %}
+
+{% assign sold_out = true %}
+{% if product.available %}
+	{% assign sold_out = false %}
+{% endif %}
+
+{% assign product_avilable_price = product.first_available_variant.price %}
+{% assign free = false %}
+{% if product_avilable_price == 0 %}
+{% assign free = true %}
+{% endif %}
+{% unless grid_image_width %}
+{%- assign grid_image_width = '300x300' -%}
+{% endunless %}
+{%- assign grid_image_scale = '1' -%}
+
+<div class="grid-view-item{% unless product.available %} product-price--sold-out grid-view-item--sold-out{% endunless %} newgrid sale-sold text-center">
+  {% if free and settings.show_free_badges %}
+  {% unless  sold_out %} 
+  {% if settings.sale_button_option == "sale_button_option_two" %}
+  <div class="sale_btn_2 free_badges">
+    <p class="{{ sale_box_opt  }}"></p>
+   {% else %}
+  <p class="{{ sale_box_opt  }} free_badges">
+  {% endif %}
+   <strong class="badges_font_size">{{ 'collections.tag.free_text' | t }}</strong> 
+  {% if settings.sale_button_option == "sale_button_option_two" %}  
+  </div>
+  {% else %}
+   </p>
+  {% endif %}
+  {% endunless %}
+    
+  {% elsif on_sale and settings.show_saved_amount %}
+  {% if settings.show_discount_amount == 'percent_save' %}
+  {% unless  sold_out %} 
+  {% if settings.sale_button_option == "sale_button_option_two" %}
+  <div class="sale_btn_2">
+    <p class="{{ sale_box_opt  }}"></p>
+    {% else %}
+    <p class="{{ sale_box_opt  }}">
+      {% endif %}
+      {% assign sale = product.compare_at_price | minus:  product.price | times: 100.0  %}
+      {% assign  sale = sale | divided_by:  product.compare_at_price | round %}
+      <strong class="badges_font_size">{{sale}}{{ 'products.product.on_save' | t }} </strong> 
+      {% if settings.sale_button_option == "sale_button_option_two" %}  
+  </div>
+  {% else %}
+  </p>
+  {% endif %}
+  {% endunless %}
+  {% endif %}
+  {% endif %}
+
+{% if sold_out %}
+{% if settings.sale_button_option == "sale_button_option_two" %}
+<div class="sale_btn_2">
+  <p class="{{ sale_box_opt  }} sld-out"></p>  
+  {% else %}
+  <p class="{{ sale_box_opt }} sld-out">
+    {% endif %}
+    <strong class="badges_font_size">{{ 'collections.tag.sold_out_text' | t }}</strong>
+
+    {% if settings.sale_button_option == "sale_button_option_two" %}  
+</div>
+{% else %}
+</p>
+{% endif %}
+{% endif %} 
+
+
+{% if settings.enable_collection_url %}
+<a class="grid-view-item__link grid-view-item__image-container" href="{{ product.url | within:collection }}">
+  {% else %}
+  <a class="grid-view-item__link grid-view-item__image-container" href="{{ product.url }}">
+    {% endif %} 
+    <div class="reveal {% if template.name == 'index' %}text-center{% else %}text-left{% endif %}">
+    {% unless settings.show_second_image %}
+
+	{% assign lazyclass="grid-view-item__image" %}
+	{% assign lazy_data_src= product.featured_image.src | img_url: grid_image_width, scale: grid_image_scale %}
+	<img {% include 'lazy_loader' %} alt="{{ product.featured_image.alt }}">  
+
+      
+      <div class="banner_holder text-center">
+        {% if settings.sale_banner_enabled %}
+        {% if product.available %}
+        {% if product.compare_at_price_max > product.price %}
+        <div class="sale_tag thumbnail_banner{% if settings.shape_badges == 'round'%} shap_round_stickers{% else %} badges_font_size{% endif %}">
+          {% if settings.shape_badges == 'round'%}<span class="badges_font_size">{% endif %} {{ 'collections.general.sale' | t }}{% if settings.shape_badges == 'round'%}</span>{% endif %}</div>
+        {% endif %}
+        {% endif %}
+        {% for col in product.collections %}
+        {% if col.handle == 'best-seller' %}
+        <div class="thumbnail_banner best_seller{% if settings.shape_badges == 'round'%} shap_round_stickers{% else %} badges_font_size{% endif %}">{% if settings.shape_badges == 'round'%}<span class="badges_font_size">{% endif %}{{ 'collections.general.best_seller' | t }}{% if settings.shape_badges == 'round'%}</span>{% endif %}</div>
+        {% endif %}
+        {% if col.handle == 'new' %}
+        <div class="thumbnail_banner new_tag{% if settings.shape_badges == 'round'%} shap_round_stickers{% else %} badges_font_size{% endif %}">{% if settings.shape_badges == 'round'%}<span class="badges_font_size">{% endif %}{{ 'collections.general.new' | t }}{% if settings.shape_badges == 'round'%}</span>{% endif %}</div>
+        {% endif %}
+        {% if col.handle == 'coming-soon' %}
+        <div class="thumbnail_banner coming-soon_tag{% if settings.shape_badges == 'round'%} shap_round_stickers{% else %} badges_font_size{% endif %}">{% if settings.shape_badges == 'round'%}<span class="badges_font_size">{% endif %}{{ 'collections.general.coming_soon' | t }}{% if settings.shape_badges == 'round'%}</span>{% endif %}</div>
+        {% endif %}
+        {% if col.handle == 'pre-order' %}
+        <div class="thumbnail_banner pre_order_tag{% if settings.shape_badges == 'round'%} shap_round_stickers{% else %} badges_font_size{% endif %}">{% if settings.shape_badges == 'round'%}<span class="badges_font_size">{% endif %}{{ 'collections.general.pre_order' | t }}{% if settings.shape_badges == 'round'%}</span>{% endif %}</div>
+        {% endif %}
+        {% if col.handle == 'staff-pick' %}
+        <div class="thumbnail_banner staff_pick_tag{% if settings.shape_badges == 'round'%} shap_round_stickers{% else %} badges_font_size{% endif %}">{% if settings.shape_badges == 'round'%}<span class="badges_font_size">{% endif %}{{ 'collections.general.staff_pick' | t }}{% if settings.shape_badges == 'round'%}</span>{% endif %}</div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+      </div>
+    {% else %} 
+    
+      <img class="main_pro1_img lazyload{% if product.images.size > 1 %} has_image{% endif %}" src="{{ product.featured_image.src | img_url: '300x300'  }}" alt="{{ product.featured_image.alt | escape }}">
+      {% if product.images.size > 1 %}
+      <img class="hidden lazyload" src="{{ product.images[1] | img_url: '300x300'  }}" alt="{{ product.images.last.alt | escape }}" />
+      {% endif %}
+
+      <div class="banner_holder text-center">
+        {% if settings.sale_banner_enabled %}
+        {% if product.available %}
+        {% if product.compare_at_price_max > product.price %}
+        <div class="sale_tag thumbnail_banner{% if settings.shape_badges == 'round'%} shap_round_stickers{% else %} badges_font_size{% endif %}">
+          {% if settings.shape_badges == 'round'%}<span class="badges_font_size">{% endif %} {{ 'collections.general.sale' | t }}{% if settings.shape_badges == 'round'%}</span>{% endif %}</div>
+        {% endif %}
+        {% endif %}
+        {% for col in product.collections %}
+        {% if col.handle == 'best-seller' %}
+        <div class="thumbnail_banner best_seller{% if settings.shape_badges == 'round'%} shap_round_stickers{% else %} badges_font_size{% endif %}">{% if settings.shape_badges == 'round'%}<span class="badges_font_size">{% endif %}{{ 'collections.general.best_seller' | t }}{% if settings.shape_badges == 'round'%}</span>{% endif %}</div>
+        {% endif %}
+        {% if col.handle == 'new' %}
+        <div class="thumbnail_banner new_tag{% if settings.shape_badges == 'round'%} shap_round_stickers{% else %} badges_font_size{% endif %}">{% if settings.shape_badges == 'round'%}<span class="badges_font_size">{% endif %}{{ 'collections.general.new' | t }}{% if settings.shape_badges == 'round'%}</span>{% endif %}</div>
+        {% endif %}
+        {% if col.handle == 'coming-soon' %}
+        <div class="thumbnail_banner coming-soon_tag{% if settings.shape_badges == 'round'%} shap_round_stickers{% else %} badges_font_size{% endif %}">{% if settings.shape_badges == 'round'%}<span class="badges_font_size">{% endif %}{{ 'collections.general.coming_soon' | t }}{% if settings.shape_badges == 'round'%}</span>{% endif %}</div>
+        {% endif %}
+        {% if col.handle == 'pre-order' %}
+        <div class="thumbnail_banner pre_order_tag{% if settings.shape_badges == 'round'%} shap_round_stickers{% else %} badges_font_size{% endif %}">{% if settings.shape_badges == 'round'%}<span class="badges_font_size">{% endif %}{{ 'collections.general.pre_order' | t }}{% if settings.shape_badges == 'round'%}</span>{% endif %}</div>
+        {% endif %}
+        {% if col.handle == 'staff-pick' %}
+        <div class="thumbnail_banner staff_pick_tag{% if settings.shape_badges == 'round'%} shap_round_stickers{% else %} badges_font_size{% endif %}">{% if settings.shape_badges == 'round'%}<span class="badges_font_size">{% endif %}{{ 'collections.general.staff_pick' | t }}{% if settings.shape_badges == 'round'%}</span>{% endif %}</div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+      </div>
+    {% endunless %}
+     </div>
+	<div class="subheading grid-view-item__title medium-up--hide ">
+      {% if section.settings.on_mobile_title_set == "mobile_title_set_line_trim" %}
+      {% assign setHlimit = section.settings.mobile_text_limit %}
+      {{ product.title | truncate:setHlimit }}
+      {% else %}
+      {{ product.title }}
+      {% endif %} 
+    </div>
+
+    <div class="subheading grid-view-item__title small--hide">
+      {% if section.settings.on_desktop_title_set == "title_set_line_trim" %}
+      {% assign setHlimit = section.settings.desktop_text_limit %}
+      {{ product.title | truncate:setHlimit }}
+      {% else %}
+      {{ product.title }}
+      {% endif %}    
+    </div>
+    {% if settings.product_review  %}
+    <div class="product_review_coll">
+      {% if settings.review_app == 'loox_review_app' %}
+      <div class="loox-rating" data-id="{{ product.id }}" data-rating="{{ product.metafields.loox.avg_rating }}" data-raters="{{ product.metafields.loox.num_reviews }}"></div>
+      {% elsif settings.review_app == 'ali_review_app' %}
+      <div> {{ product.metafields.alireviews.seo_rating_review_key }} </div>
+      {% else %}
+      <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+      {% endif %}
+    </div>
+    {% endif %}
+    {% if section.settings.show_vendor %} 
+      <div class="grid-view-item__vendor">{{ product.vendor }}</div>
+    {% endif %}
+    <div class="grid-view-item__meta">
+      {% include 'product-price' %}
+    </div>
+  </a>
+<div class="r_addtocartbutton">
+{% for variant in  product.variants %}
+  {% if variant == product.selected_or_first_available_variant %}
+  {%- assign pp_id =  variant.id  -%}
+  {% endif %}
+{% endfor %}
+  <button type="submit" class="btn medium-up--five-eighths" {% unless product.first_available_variant.available %}disabled="disabled" {% endunless %}onclick="custome_addcart(this,'{{ pp_id }}',1)">
+    <span id="r_AddToCartText"> 
+      {% unless product.first_available_variant.available %}
+      {{ 'products.product.sold_out' | t }}
+      {% else %}
+      {{ 'products.upsell.add_to_cart_button_text' | t }} 
+      {% endunless %}
+    </span>
+  </button>
+</div>
+</div>
+<style>
+  @media(min-width:320px) and (max-width:991px) {
+
+    .h4.grid-view-item__title.desktop-only {
+      display: none !important;
+    }
+
+    .h4.grid-view-item__title.mobile-only {
+      display: block !important;
+    }  
+  }
+  .h4.grid-view-item__title.desktop-only {
+    display: block;
+  }.h4.grid-view-item__title.mobile-only {
+    display: none;
+  } 
+</style>
